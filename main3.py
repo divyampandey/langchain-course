@@ -32,11 +32,9 @@ print(react_prompt)
 tavily_search = TavilySearch()
 tools = [tavily_search]
 
-llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
+llm = ChatOpenAI(model="gpt-4o", temperature=0)
 react_agent = create_react_agent(llm, tools=tools, prompt=react_prompt)
-
 chain = AgentExecutor(agent=react_agent, tools=tools, verbose=True)
-
 extract_output = RunnableLambda(lambda x: x["output"])
 parse_output = RunnableLambda(lambda x: parser.parse(x))
 
@@ -45,7 +43,14 @@ agent = chain | extract_output | parse_output
 
 def main():
     print("Hello from langchain-course!")
-    result = agent.invoke({"input": "What is the AQI of Gurgaon sector 46 now?"})
+    result = agent.invoke(
+        {
+            "input": """Can you please tell authentic and popular
+     sources widely used to prepare for the 
+     product sense interviews for the 
+     Data Scientist/ ML Engineer role for product based companies in 2025. Give best answer as per user reviews and content interaction and sort them by confidence?"""
+        }
+    )
     print(result)
 
 
